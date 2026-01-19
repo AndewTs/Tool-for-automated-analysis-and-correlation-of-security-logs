@@ -1,0 +1,58 @@
+{
+  "application": {
+    "name": "Security Log Analyzer",
+    "version": "2.0",
+    "author": "Security Team",
+    "default_mode": "gui"
+  },
+  
+  "database": {
+    "path": "logs.db",
+    "backup_enabled": true,
+    "backup_path": "backups/",
+    "retention_days": 30,
+    "max_logs_per_table": 100000
+  }, 
+  "rules": {
+    "bruteforce": {
+      "pattern": "(?:Failed password|Invalid user|authentication failure|Login failed|FAILED LOGIN)",
+      "window": 300,
+      "threshold": 5,
+      "description": "Множественные неудачные попытки аутентификации",
+      "severity": "high",
+      "enabled": true
+    },
+    "sqli_attempt": {
+      "pattern": "(?:union.*select|' or '1'='1|sleep\\(|benchmark\\(|-- |/\\*.*\\*/|exec\\(|SELECT.*FROM|DROP TABLE|INSERT INTO)",
+      "case_sensitive": false,
+      "description": "Попытка SQL-инъекции",
+      "severity": "high",
+      "enabled": true
+    },
+    "xss_attempt": {
+      "pattern": "(?:<script>|javascript:|onload=|onerror=|alert\\(|document\\.location|eval\\(|fromCharCode)",
+      "case_sensitive": false,
+      "description": "Попытка XSS-атаки",
+      "severity": "high",
+      "enabled": true
+    },
+    "port_scan": {
+      "pattern": "(?:Connection reset by peer|Invalid connection|Bad request|Port scan|drop:|DROP|DPT=.*SRC=|SRC=.*DPT=)",
+      "window": 30,
+      "threshold": 5,
+      "description": "Возможное сканирование портов",
+      "severity": "high",
+      "enabled": true
+    },
+    "firewall_block": {
+      "pattern": "(?:drop:|DROP|blocked|Blocked)",
+      "window": 60,
+      "threshold": 3,
+      "description": "Множественные блокировки firewall",
+      "severity": "medium",
+      "enabled": true
+    }
+  }
+}
+
+  
